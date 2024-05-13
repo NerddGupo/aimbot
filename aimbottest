@@ -1,0 +1,59 @@
+_G.aimbot = false
+local camera = game.Workspace.CurrentCamera
+local localplayer = game:GetService("Players").LocalPlayer
+
+
+script.Parent.MouseClick:Connect(function()
+	if _G.aimbot == false then
+		_G.aimbot = true
+		script.Parent.TextColor3 = Color3.fromRGB(0,170,0
+		script.Parent.Text = "Aimbot On"
+			function closestplayer()
+				local dist = math.huge
+				local target = nil
+				for i,v in pairs (game:GetService("Players"):GetPlayers()) do
+					if v ~= localplayer then
+						if v.Character and v.Character:FindFirstChild("Head") and v.TeamColor ~= localplayer.TeamColor and _G.aimbot then
+							local magnitude = (v.Character.Head.Position - localplayer.Character.Head.Position).magnitude
+							if magnitude < dist then
+								dist = magnitude
+								target = v
+							end 
+						end
+					end
+					return target
+				end
+			end
+	else
+		_G.aimbot = false
+		script.Parent.TextColor3 = Color3.fromRGB(255,0,0)
+		script.Parent.Text = "Aimbot Off"
+	end
+		)
+	end
+end)
+
+local settings = {
+	keybind = Enum.UserInputType.MouseButton2
+}
+
+local UIS = Game:GetService("UserInputService")
+local aiming = false
+
+UIS.InputBegan:Connect(function(inp)
+	if inp.UserInputType == settings.keybind then
+		then aiming = true
+	end
+end)
+
+UIS.InputEnded:Connect(function(inp)
+	if inp.UserInputType == settings.keybind then
+		then aiming = false
+    end
+end)
+
+game:GetService("RunService").RenderStepped:Connect(function()
+	if aiming then
+		camera.CFrame = CFrame.new(camera.CFrame.Position,closestplayer().Character.Head.Position)
+	end
+end)
